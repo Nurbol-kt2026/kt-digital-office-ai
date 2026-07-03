@@ -3,192 +3,199 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI-помощник регионального директора</title>
+    <title>GR-кабинет Алматинского региона</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <div class="layout">
       <aside class="sidebar" aria-label="Навигация">
         <div class="brand">
-          <div class="brand-mark">KT</div>
+          <div class="brand__mark">KT</div>
           <div>
-            <strong>Digital Office</strong>
-            <span>АО «Казахтелеком»</span>
+            <strong>GR Cabinet</strong>
+            <span>Алматинский регион</span>
           </div>
         </div>
 
-        <nav class="nav-list">
-          <a href="#overview" class="active">Панель</a>
-          <a href="#documents">Документы</a>
-          <a href="#projects">Проекты</a>
+        <nav class="nav">
+          <a class="active" href="#region">Регион</a>
+          <a href="#schedule">Расписание</a>
+          <a href="#correspondence">Корреспонденция</a>
           <a href="#legal">НПА / ВНД</a>
-          <a href="#meetings">Встречи</a>
-          <a href="#tasks">Поручения</a>
-          <a href="#assistant">AI-помощник</a>
+          <a href="#monitoring">Мониторинг</a>
+          <a href="#contacts">Контакты</a>
         </nav>
 
-        <div class="safety-note">
-          <span>Режим</span>
-          <strong>Бесплатно и безопасно</strong>
-          <p>Данные не отправляются на сервер. Макет рассчитан на локальное использование и дальнейшую интеграцию.</p>
+        <div class="security">
+          <span>Принцип</span>
+          <strong>Бесплатно. Локально. Безопасно.</strong>
+          <p>Данные формы сохраняются только в этом браузере. Внешние сайты открываются как справочные ссылки.</p>
         </div>
       </aside>
 
       <main>
-        <section class="hero" id="overview">
-          <div class="hero-copy">
-            <p class="eyebrow">Рабочее место регионального директора</p>
-            <h1>AI-помощник по цифровым проектам, МИО, поручениям и нормативному сопровождению</h1>
+        <section class="hero" id="region">
+          <div class="hero__copy">
+            <p class="eyebrow">АО «Казахтелеком»</p>
+            <h1>GR-кабинет по встречам, задачам, НПА и корреспонденции</h1>
             <p>
-              Единая панель для контроля инициатив, подготовки документов, ведения встреч и проверки правовых оснований.
+              Рабочее пространство для взаимодействия с партнерами, акиматами и внутренними подразделениями по г. Алматы,
+              Алматинской и Жетысуской областям.
             </p>
           </div>
-          <div class="hero-visual" aria-label="Схема работы помощника">
-            <div class="node core">AI</div>
-            <div class="node n1">МИО</div>
-            <div class="node n2">НПА</div>
-            <div class="node n3">Проекты</div>
-            <div class="node n4">Поручения</div>
-            <div class="node n5">Документы</div>
+
+          <div class="region-card" aria-label="Карта Алматинского региона">
+            <div class="region-map">
+              <button class="map-zone city active" data-region="almaty">г. Алматы</button>
+              <button class="map-zone oblast" data-region="oblast">Алматинская область</button>
+              <button class="map-zone zhetysu" data-region="zhetysu">Жетысуская область</button>
+            </div>
+            <div class="region-info" id="regionInfo"></div>
           </div>
         </section>
 
-        <section class="kpi-grid" aria-label="Ключевые показатели">
+        <section class="summary-grid" aria-label="Краткая сводка">
           <article>
-            <span>Активные проекты</span>
-            <strong>18</strong>
-            <p>4 требуют внимания</p>
+            <span>Встречи на неделе</span>
+            <strong id="meetingsCount">0</strong>
           </article>
           <article>
-            <span>Поручения на контроле</span>
-            <strong>42</strong>
-            <p>7 сроков до 3 дней</p>
+            <span>Задачи до 7 дней</span>
+            <strong id="weekTasksCount">0</strong>
           </article>
           <article>
-            <span>Встречи с МИО</span>
-            <strong>9</strong>
-            <p>на ближайшие 2 недели</p>
+            <span>Контакты в базе</span>
+            <strong id="contactsCount">0</strong>
           </article>
           <article>
-            <span>Документы в работе</span>
-            <strong>26</strong>
-            <p>12 писем, 8 служебок, 6 отчетов</p>
+            <span>Черновиков готово</span>
+            <strong id="draftsCount">0</strong>
           </article>
         </section>
 
-        <section class="workspace">
-          <div class="main-column">
-            <section class="panel" id="assistant">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">AI-помощник</p>
-                  <h2>Быстрый разбор запроса</h2>
-                </div>
-                <button class="ghost-button" id="clearAssistant">Очистить</button>
+        <section class="two-column">
+          <section class="panel" id="schedule">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Мое расписание</p>
+                <h2>Задачи и встречи</h2>
               </div>
-              <div class="prompt-box">
-                <textarea id="assistantInput" rows="5" placeholder="Например: подготовь повестку встречи с акиматом по подключению соцобъектов и проверь риски по срокам"></textarea>
-                <div class="prompt-actions">
-                  <select id="assistantMode" aria-label="Тип результата">
-                    <option value="brief">Краткая справка</option>
-                    <option value="letter">Проект письма</option>
-                    <option value="meeting">Повестка встречи</option>
-                    <option value="risk">Риски и меры</option>
-                  </select>
-                  <button id="generateAnswer">Сформировать</button>
-                </div>
-              </div>
-              <div class="answer-card" id="assistantOutput">
-                <strong>Готов к работе.</strong>
-                <p>Введите задачу, выберите формат и получите структурированный черновик без передачи данных наружу.</p>
-              </div>
-            </section>
+            </div>
 
-            <section class="panel" id="projects">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">Проекты</p>
-                  <h2>Паспорта и статусы инициатив</h2>
-                </div>
-                <div class="segmented" role="tablist" aria-label="Фильтр проектов">
-                  <button class="active" data-project-filter="all">Все</button>
-                  <button data-project-filter="risk">Риски</button>
-                  <button data-project-filter="mio">МИО</button>
-                </div>
-              </div>
-              <div class="project-list" id="projectList"></div>
-            </section>
+            <form class="input-grid" id="taskForm">
+              <label>
+                Дата
+                <input type="date" id="taskDate" required />
+              </label>
+              <label>
+                Организация
+                <input type="text" id="taskOrg" placeholder="Акимат / партнер / подразделение" required />
+              </label>
+              <label>
+                Тема
+                <input type="text" id="taskTopic" placeholder="Например: подключение соцобъектов" required />
+              </label>
+              <label>
+                Регион
+                <select id="taskRegion">
+                  <option>г. Алматы</option>
+                  <option>Алматинская область</option>
+                  <option>Жетысуская область</option>
+                </select>
+              </label>
+              <button type="submit">Добавить</button>
+            </form>
 
-            <section class="panel" id="documents">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">Документы</p>
-                  <h2>Письма, служебки, отчеты</h2>
-                </div>
-                <button id="addDocument">Добавить документ</button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Тип</th>
-                      <th>Тема</th>
-                      <th>Адресат</th>
-                      <th>Срок</th>
-                      <th>Статус</th>
-                    </tr>
-                  </thead>
-                  <tbody id="documentRows"></tbody>
-                </table>
-              </div>
-            </section>
-          </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Организация</th>
+                    <th>Тема</th>
+                    <th>Регион</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody id="taskRows"></tbody>
+              </table>
+            </div>
+          </section>
 
-          <aside class="side-column">
-            <section class="panel compact" id="tasks">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">Контроль</p>
-                  <h2>Ближайшие поручения</h2>
-                </div>
+          <section class="panel ai-panel" id="correspondence">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Корреспонденция</p>
+                <h2>ИИ-помощник для писем и СЗ</h2>
               </div>
-              <div class="task-list" id="taskList"></div>
-            </section>
+            </div>
 
-            <section class="panel compact" id="legal">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">НПА / ВНД</p>
-                  <h2>Правовые опоры</h2>
-                </div>
-              </div>
-              <div class="legal-list">
-                <button data-legal="procurement">Закупки и договоры</button>
-                <button data-legal="personal">Персональные данные</button>
-                <button data-legal="infra">Инфраструктура и доступ</button>
-                <button data-legal="mio">Взаимодействие с МИО</button>
-              </div>
-              <div class="answer-card small" id="legalOutput">
-                Выберите тему, чтобы увидеть чек-лист ограничений и оснований.
-              </div>
-            </section>
+            <div class="draft-form">
+              <label>
+                Формат
+                <select id="draftType">
+                  <option value="letter">Письмо</option>
+                  <option value="memo">Служебная записка</option>
+                  <option value="agenda">Повестка встречи</option>
+                  <option value="protocol">Проект протокола</option>
+                </select>
+              </label>
+              <label>
+                Адресат
+                <input type="text" id="draftRecipient" placeholder="Кому направляется" />
+              </label>
+              <label>
+                Суть вопроса
+                <textarea id="draftTopic" rows="6" placeholder="Опишите ситуацию, просьбу, срок и ожидаемый результат"></textarea>
+              </label>
+              <button id="makeDraft">Сформировать черновик</button>
+            </div>
+            <div class="draft-output" id="draftOutput">
+              <strong>Черновик появится здесь.</strong>
+              <p>Формулировки нейтральные, деловые, с акцентом на сроки, ответственных и следующий шаг.</p>
+            </div>
+          </section>
+        </section>
 
-            <section class="panel compact" id="meetings">
-              <div class="section-head">
-                <div>
-                  <p class="eyebrow">Встречи</p>
-                  <h2>Повестка и шаги</h2>
-                </div>
+        <section class="content-grid">
+          <section class="panel" id="legal">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">База НПА / ВНД КТ</p>
+                <h2>Правовые и внутренние ориентиры</h2>
               </div>
-              <div class="meeting-card">
-                <span>Сегодня, 16:00</span>
-                <strong>МИО: подключение школ и ФАП</strong>
-                <p>Вопросы: сроки РРЛ, доступ к площадкам, ответственные по районам.</p>
-                <button id="makeProtocol">Собрать протокол</button>
+            </div>
+            <div class="legal-list" id="legalList"></div>
+          </section>
+
+          <section class="panel" id="monitoring">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Мониторинг</p>
+                <h2>Новости и источники</h2>
               </div>
-              <div class="answer-card small" id="protocolOutput">Протокол появится здесь.</div>
-            </section>
-          </aside>
+            </div>
+            <div class="links-grid" id="linksGrid"></div>
+          </section>
+
+          <section class="panel contacts-panel" id="contacts">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Контакты</p>
+                <h2>Люди и организации</h2>
+              </div>
+            </div>
+
+            <form class="contact-form" id="contactForm">
+              <input type="text" id="contactName" placeholder="ФИО" required />
+              <input type="text" id="contactOrg" placeholder="Организация" required />
+              <input type="text" id="contactRole" placeholder="Должность / роль" />
+              <input type="text" id="contactTheme" placeholder="Тема взаимодействия" />
+              <button type="submit">Добавить контакт</button>
+            </form>
+
+            <div class="contact-list" id="contactList"></div>
+          </section>
         </section>
       </main>
     </div>
