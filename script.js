@@ -1,162 +1,200 @@
-const projects = [
-  {
-    name: "Подключение социально значимых объектов",
-    owner: "Департамент B2G",
-    status: "На контроле",
-    tone: "amber",
-    text: "Нужны подтверждения доступа к площадкам и синхронизация графика с районными акиматами.",
-    tags: ["МИО", "Инфраструктура", "Сроки"],
-    type: ["mio", "risk"]
+const regionData = {
+  almaty: {
+    title: "г. Алматы",
+    text: "Фокус: городские цифровые инициативы, партнеры, вопросы качества связи, координация с профильными управлениями.",
+    chips: ["Акимат города", "партнеры", "цифровизация"]
   },
-  {
-    name: "Цифровизация обращений по качеству связи",
-    owner: "Служба эксплуатации",
-    status: "В работе",
-    tone: "blue",
-    text: "Формируется единый реестр обращений, SLA и карта повторных инцидентов по населенным пунктам.",
-    tags: ["Сервис", "Аналитика"],
-    type: ["all"]
+  oblast: {
+    title: "Алматинская область",
+    text: "Фокус: районные акиматы, социальные объекты, инфраструктура, доступ к площадкам и контроль сроков.",
+    chips: ["районы", "соцобъекты", "инфраструктура"]
   },
-  {
-    name: "Единый паспорт проектов региона",
-    owner: "Офис цифровых проектов",
-    status: "Стабильно",
-    tone: "green",
-    text: "Паспорта инициатив приведены к единому формату: цель, эффект, бюджет, риски, ответственные.",
-    tags: ["Документы", "Проекты"],
-    type: ["all"]
-  },
-  {
-    name: "Согласование размещения оборудования",
-    owner: "Юридический блок",
-    status: "Риск",
-    tone: "red",
-    text: "Требуется сверка правовых оснований, сервитутов и ограничений по объектам коммунальной собственности.",
-    tags: ["НПА", "МИО", "Риски"],
-    type: ["mio", "risk"]
+  zhetysu: {
+    title: "Жетысуская область",
+    text: "Фокус: межрайонная координация, проекты связи, встречи с МИО и фиксация поручений по территориям.",
+    chips: ["МИО", "проекты связи", "поручения"]
   }
-];
-
-const documents = [
-  ["Письмо", "Запрос графика доступа к объектам", "Акимат области", "05.07.2026", "На подписи"],
-  ["Служебка", "Риски по подключению ФАП", "Региональный директор", "06.07.2026", "Черновик"],
-  ["Отчет", "Статус цифровых проектов за неделю", "Центральный аппарат", "08.07.2026", "В работе"],
-  ["Письмо", "Согласование списка ответственных", "Управление цифровизации", "09.07.2026", "Новый"]
-];
-
-const tasks = [
-  ["Сверить сроки по 12 соцобъектам", "до 04.07.2026, ответственный: проектный офис", "danger"],
-  ["Подготовить вопросы к встрече с МИО", "до 05.07.2026, ответственный: B2G", "warning"],
-  ["Обновить паспорт проекта по обращениям", "до 08.07.2026, ответственный: эксплуатация", ""],
-  ["Проверить правовые ограничения по размещению", "до 10.07.2026, ответственный: юристы", ""]
-];
-
-const legalMap = {
-  procurement: "<strong>Закупки и договоры</strong><br>Проверьте способ закупки, лимиты, основания для прямого договора, сроки согласования и наличие подтвержденного бюджета.",
-  personal: "<strong>Персональные данные</strong><br>Нужны цель обработки, минимальный состав данных, доступ по ролям, журналирование и согласованная модель хранения.",
-  infra: "<strong>Инфраструктура и доступ</strong><br>Проверьте право размещения, технические условия, охранные зоны, доступ к площадке и ответственность за электропитание.",
-  mio: "<strong>Взаимодействие с МИО</strong><br>Зафиксируйте поручение, протокол, ответственных, сроки предоставления данных и канал эскалации по спорным вопросам."
 };
 
-function renderProjects(filter = "all") {
-  const list = document.querySelector("#projectList");
-  list.innerHTML = "";
-  projects
-    .filter((project) => filter === "all" || project.type.includes(filter))
-    .forEach((project) => {
-      const card = document.createElement("article");
-      card.className = "project-card";
-      card.innerHTML = `
-        <div>
-          <strong>${project.name}</strong>
-          <p>${project.text}</p>
-          <div class="tags">${project.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
-        </div>
-        <div>
-          <span class="status ${project.tone}">${project.status}</span>
-          <p>${project.owner}</p>
-        </div>
-      `;
-      list.appendChild(card);
-    });
+const defaultTasks = [
+  ["2026-07-05", "Акимат г. Алматы", "GR-встреча по городским цифровым сервисам", "г. Алматы", "В работе"],
+  ["2026-07-08", "Акимат Алматинской области", "Доступ к площадкам для подключения соцобъектов", "Алматинская область", "Срочно"],
+  ["2026-07-10", "Партнер B2G", "Сверка статуса совместной инициативы", "Жетысуская область", "План"]
+];
+
+const defaultContacts = [
+  ["Алия Садыкова", "Управление цифровизации", "Руководитель направления", "цифровые проекты"],
+  ["Ерлан Мусин", "Районный акимат", "Заместитель акима", "инфраструктура"],
+  ["Дана Ким", "Партнер", "GR-менеджер", "совместные инициативы"]
+];
+
+const legalItems = [
+  ["Взаимодействие с МИО", "Протокол встречи, ответственные, сроки, основание запроса и канал эскалации."],
+  ["Персональные данные", "Минимальный состав данных, цель обработки, доступ по ролям и журналирование."],
+  ["Закупки и договоры", "Способ закупки, бюджет, сроки согласования, договорные обязательства и риски."],
+  ["Размещение оборудования", "Право доступа к площадке, технические условия, охранные зоны и электропитание."],
+  ["ВНД Казахтелеком", "Регламенты согласования, служебные записки, отчетность и внутренние поручения."]
+];
+
+const sourceLinks = [
+  ["IT и AI", "https://digitalbusiness.kz/", "Digital Business Казахстан"],
+  ["Цифровизация РК", "https://www.gov.kz/memleket/entities/mdai", "Министерство цифрового развития"],
+  ["Телеком", "https://telecom.kz/", "Казахтелеком"],
+  ["Финансы", "https://kase.kz/", "KASE"],
+  ["Политика и госуправление", "https://www.akorda.kz/", "Akorda"],
+  ["г. Алматы", "https://www.gov.kz/memleket/entities/almaty", "Акимат Алматы"],
+  ["Алматинская область", "https://www.gov.kz/memleket/entities/zhetysu-almaty", "Акимат области"],
+  ["Жетысуская область", "https://www.gov.kz/memleket/entities/zhetysu", "Акимат Жетысу"]
+];
+
+let tasks = JSON.parse(localStorage.getItem("grTasks") || "null") || defaultTasks;
+let contacts = JSON.parse(localStorage.getItem("grContacts") || "null") || defaultContacts;
+let draftsCount = Number(localStorage.getItem("grDraftsCount") || 0);
+
+function saveState() {
+  localStorage.setItem("grTasks", JSON.stringify(tasks));
+  localStorage.setItem("grContacts", JSON.stringify(contacts));
+  localStorage.setItem("grDraftsCount", String(draftsCount));
 }
 
-function renderDocuments() {
-  const rows = document.querySelector("#documentRows");
-  rows.innerHTML = documents
-    .map((item) => `<tr><td>${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td><td>${item[3]}</td><td>${item[4]}</td></tr>`)
-    .join("");
+function renderRegion(key = "almaty") {
+  const data = regionData[key];
+  document.querySelectorAll(".map-zone").forEach((button) => {
+    button.classList.toggle("active", button.dataset.region === key);
+  });
+  document.querySelector("#regionInfo").innerHTML = `
+    <h3>${data.title}</h3>
+    <p>${data.text}</p>
+    <div class="tags">${data.chips.map((chip) => `<span class="status">${chip}</span>`).join(" ")}</div>
+  `;
 }
 
 function renderTasks() {
-  const list = document.querySelector("#taskList");
-  list.innerHTML = tasks
-    .map((task) => `<div class="task-item ${task[2]}"><strong>${task[0]}</strong><span>${task[1]}</span></div>`)
+  document.querySelector("#taskRows").innerHTML = tasks
+    .map((task) => {
+      const hot = task[4] === "Срочно" ? " hot" : "";
+      return `
+        <tr>
+          <td>${task[0]}</td>
+          <td>${task[1]}</td>
+          <td>${task[2]}</td>
+          <td>${task[3]}</td>
+          <td><span class="status${hot}">${task[4]}</span></td>
+        </tr>
+      `;
+    })
     .join("");
 }
 
-function buildAssistantAnswer(text, mode) {
-  const cleanText = text.trim() || "инициатива по цифровому проекту региона";
+function renderLegal() {
+  document.querySelector("#legalList").innerHTML = legalItems
+    .map((item) => `<article class="legal-item"><h3>${item[0]}</h3><p>${item[1]}</p></article>`)
+    .join("");
+}
+
+function renderLinks() {
+  document.querySelector("#linksGrid").innerHTML = sourceLinks
+    .map((link) => `<a class="source-link" href="${link[1]}" target="_blank" rel="noopener noreferrer"><strong>${link[0]}</strong><span>${link[2]}</span></a>`)
+    .join("");
+}
+
+function renderContacts() {
+  document.querySelector("#contactList").innerHTML = contacts
+    .map((contact) => `
+      <article class="contact-card">
+        <strong>${contact[0]}</strong>
+        <span>${contact[1]} · ${contact[2]}</span>
+        <span>Тема: ${contact[3]}</span>
+      </article>
+    `)
+    .join("");
+}
+
+function renderCounters() {
+  document.querySelector("#meetingsCount").textContent = tasks.length;
+  document.querySelector("#weekTasksCount").textContent = tasks.filter((task) => task[4] !== "Завершено").length;
+  document.querySelector("#contactsCount").textContent = contacts.length;
+  document.querySelector("#draftsCount").textContent = draftsCount;
+}
+
+function buildDraft(type, recipient, topic) {
+  const to = recipient.trim() || "адресату";
+  const text = topic.trim() || "по вопросу взаимодействия в рамках GR-направления Алматинского региона";
   const templates = {
-    brief: `<strong>Краткая справка</strong><br>Тема: ${cleanText}.<br>Фокус: цель, текущий статус, ответственные, риски, запрос к МИО и следующий шаг. Рекомендуется приложить паспорт проекта и таблицу поручений.`,
-    letter: `<strong>Проект письма</strong><br>Просим рассмотреть вопрос: ${cleanText}. Предлагаем закрепить ответственных, подтвердить сроки предоставления данных и провести рабочую сверку статуса до ближайшего отчетного периода.`,
-    meeting: `<strong>Повестка встречи</strong><br>1. Текущий статус: ${cleanText}.<br>2. Блокирующие вопросы и решения МИО.<br>3. Ответственные по каждой стороне.<br>4. Сроки, протокол и следующий контрольный срез.`,
-    risk: `<strong>Риски и меры</strong><br>Риск сроков: назначить владельца и контрольную дату. Правовой риск: сверить НПА/ВНД. Коммуникационный риск: зафиксировать протокол с МИО. Риск данных: хранить только необходимый минимум.`
+    letter: `<strong>Проект письма</strong><p>Уважаемые коллеги! Просим рассмотреть вопрос: ${text}. Для своевременной координации предлагаем определить ответственных лиц, подтвердить актуальные сроки и направить позицию в рабочем порядке. Адресат: ${to}.</p>`,
+    memo: `<strong>Проект служебной записки</strong><p>В целях обеспечения GR-сопровождения сообщаем о необходимости проработки вопроса: ${text}. Предлагается закрепить ответственного, проверить нормативные ограничения и подготовить позицию для встречи с ${to}.</p>`,
+    agenda: `<strong>Повестка встречи</strong><p>1. Текущий статус: ${text}.<br>2. Вопросы к ${to}.<br>3. Риски, ограничения и НПА/ВНД.<br>4. Ответственные и сроки.<br>5. Следующие шаги и формат контроля.</p>`,
+    protocol: `<strong>Проект протокола</strong><p>По вопросу ${text} договорились: закрепить ответственных со стороны участников, обновить статус до ближайшего контрольного срока, обменяться исходными данными и провести повторную сверку после выполнения первичных поручений.</p>`
   };
-  return templates[mode];
-}
-
-function setProjectFilter(button) {
-  document.querySelectorAll("[data-project-filter]").forEach((item) => item.classList.remove("active"));
-  button.classList.add("active");
-  renderProjects(button.dataset.projectFilter);
-}
-
-function addDocumentRow() {
-  documents.unshift(["Черновик", "Новый документ по инициативе", "Уточняется", "Не задан", "Новый"]);
-  renderDocuments();
-}
-
-function setLegalTopic(key) {
-  document.querySelector("#legalOutput").innerHTML = legalMap[key];
-}
-
-function makeProtocol() {
-  document.querySelector("#protocolOutput").innerHTML = "<strong>Проект протокола</strong><br>Решили: подтвердить список объектов, назначить ответственных от МИО и Казахтелеком, обновить график до 05.07.2026, следующий контроль - 08.07.2026.";
+  return templates[type];
 }
 
 document.addEventListener("click", (event) => {
-  const projectFilter = event.target.closest("[data-project-filter]");
-  const legalTopic = event.target.closest("[data-legal]");
-
-  if (projectFilter) {
-    setProjectFilter(projectFilter);
-  }
-
-  if (event.target.closest("#addDocument")) {
-    addDocumentRow();
-  }
-
-  if (legalTopic) {
-    setLegalTopic(legalTopic.dataset.legal);
-  }
-
-  if (event.target.closest("#makeProtocol")) {
-    makeProtocol();
+  const zone = event.target.closest("[data-region]");
+  if (zone) {
+    renderRegion(zone.dataset.region);
   }
 });
 
-document.querySelector("#generateAnswer").addEventListener("click", () => {
-  const text = document.querySelector("#assistantInput").value;
-  const mode = document.querySelector("#assistantMode").value;
-  document.querySelector("#assistantOutput").innerHTML = buildAssistantAnswer(text, mode);
+function addTaskFromForm() {
+  const date = document.querySelector("#taskDate").value;
+  const org = document.querySelector("#taskOrg").value.trim();
+  const topic = document.querySelector("#taskTopic").value.trim();
+
+  if (!date || !org || !topic) {
+    return;
+  }
+
+  tasks.unshift([
+    date,
+    org,
+    topic,
+    document.querySelector("#taskRegion").value,
+    "В работе"
+  ]);
+  document.querySelector("#taskForm").reset();
+  saveState();
+  renderTasks();
+  renderCounters();
+}
+
+document.querySelector("#taskForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  addTaskFromForm();
 });
 
-document.querySelector("#clearAssistant").addEventListener("click", () => {
-  document.querySelector("#assistantInput").value = "";
-  document.querySelector("#assistantOutput").innerHTML = "<strong>Готов к работе.</strong><p>Введите задачу, выберите формат и получите структурированный черновик без передачи данных наружу.</p>";
+document.querySelector("#taskForm button[type='submit']").addEventListener("click", (event) => {
+  event.preventDefault();
+  addTaskFromForm();
 });
 
-renderProjects();
-renderDocuments();
+document.querySelector("#contactForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  contacts.unshift([
+    document.querySelector("#contactName").value,
+    document.querySelector("#contactOrg").value,
+    document.querySelector("#contactRole").value || "контакт",
+    document.querySelector("#contactTheme").value || "GR-взаимодействие"
+  ]);
+  event.currentTarget.reset();
+  saveState();
+  renderContacts();
+  renderCounters();
+});
+
+document.querySelector("#makeDraft").addEventListener("click", () => {
+  const type = document.querySelector("#draftType").value;
+  const recipient = document.querySelector("#draftRecipient").value;
+  const topic = document.querySelector("#draftTopic").value;
+  document.querySelector("#draftOutput").innerHTML = buildDraft(type, recipient, topic);
+  draftsCount += 1;
+  saveState();
+  renderCounters();
+});
+
+renderRegion();
 renderTasks();
+renderLegal();
+renderLinks();
+renderContacts();
+renderCounters();
